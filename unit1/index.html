@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Unit 1 教學駕駛艙</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <canvas id="drawLayer" class="draw-layer" aria-label="畫筆圖層"></canvas>
+
+    <header class="topbar">
+      <div class="brand">
+        <span class="page-mark">U1</span>
+        <div>
+          <p class="eyebrow">Have You Had Breakfast Yet?</p>
+          <h1>Unit 1 教學駕駛艙</h1>
+        </div>
+      </div>
+      <div class="mode-switch" aria-label="模式切換">
+        <button class="mode-btn active" data-mode="teacher">教師模式</button>
+        <button class="mode-btn" data-mode="student">學生模式</button>
+      </div>
+    </header>
+
+    <main class="dashboard">
+      <aside class="lesson-nav" aria-label="教學重點">
+        <div class="nav-heading">
+          <span>教學重點</span>
+          <strong id="focusCount">1 / 7</strong>
+        </div>
+        <div id="focusList" class="focus-list"></div>
+      </aside>
+
+      <section class="workspace" aria-live="polite">
+        <div class="lesson-title-row">
+          <div>
+            <p id="focusLabel" class="eyebrow">Teaching Point</p>
+            <h2 id="focusTitle"></h2>
+          </div>
+          <div class="progress-box">
+            <span>形成性評量</span>
+            <strong id="scoreText">0 / 0</strong>
+          </div>
+        </div>
+
+        <div class="main-grid">
+          <section class="panel carousel-panel">
+            <div class="panel-head">
+              <h3>簡報輪播</h3>
+              <div class="carousel-actions">
+                <button id="prevSlide" class="icon-btn" aria-label="上一張">‹</button>
+                <span id="slideIndicator">1 / 1</span>
+                <button id="nextSlide" class="icon-btn" aria-label="下一張">›</button>
+              </div>
+            </div>
+            <div class="slide-frame">
+              <img id="slideImage" alt="教學簡報預覽" />
+            </div>
+          </section>
+
+          <section class="panel interactive-panel">
+            <div class="panel-head">
+              <h3>互動視覺化</h3>
+              <button id="resetActivity" class="chalk-btn">重置</button>
+            </div>
+            <div id="visualTask" class="visual-task"></div>
+            <div id="teacherTip" class="teacher-tip"></div>
+          </section>
+
+          <section class="panel assessment-panel">
+            <div class="panel-head">
+              <h3>形成性評量</h3>
+              <button id="showAnswer" class="chalk-btn">顯示答案</button>
+            </div>
+            <p id="questionText" class="question"></p>
+            <div id="choiceList" class="choice-list"></div>
+            <p id="feedbackText" class="feedback"></p>
+          </section>
+
+          <section class="panel infographic-panel">
+            <div class="panel-head">
+              <h3>資訊圖表</h3>
+              <a id="openInfographic" class="chalk-link" target="_blank" rel="noreferrer">開啟圖片</a>
+            </div>
+            <div class="infographic-frame">
+              <img id="infographicImage" alt="教學重點資訊圖表" />
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <aside class="tool-panel" aria-label="浮動工具面板">
+      <div class="tool-head">
+        <span>課堂工具</span>
+        <button id="collapseTools" class="icon-btn" aria-label="收合工具">×</button>
+      </div>
+
+      <section class="tool-card">
+        <h4>抽籤</h4>
+        <textarea id="rosterInput" rows="4">Amy
+Ben
+Cody
+Ela
+Harry
+Kate
+Jim</textarea>
+        <div class="tool-row">
+          <button id="pickName" class="chalk-btn">抽籤</button>
+          <strong id="pickedName">尚未抽籤</strong>
+        </div>
+      </section>
+
+      <section class="tool-card">
+        <h4>計時器</h4>
+        <div class="timer-display" id="timerDisplay">03:00</div>
+        <div class="timer-controls">
+          <button class="time-preset" data-seconds="60">1 分</button>
+          <button class="time-preset" data-seconds="180">3 分</button>
+          <button class="time-preset" data-seconds="300">5 分</button>
+        </div>
+        <div class="tool-row">
+          <button id="startTimer" class="chalk-btn">開始</button>
+          <button id="pauseTimer" class="chalk-btn">暫停</button>
+          <button id="resetTimer" class="chalk-btn">重置</button>
+        </div>
+      </section>
+
+      <section class="tool-card">
+        <h4>畫筆</h4>
+        <div class="pen-controls">
+          <button class="swatch active" data-color="#f7f2df" style="--swatch: #f7f2df" aria-label="白色粉筆"></button>
+          <button class="swatch" data-color="#ffd86b" style="--swatch: #ffd86b" aria-label="黃色粉筆"></button>
+          <button class="swatch" data-color="#f4a261" style="--swatch: #f4a261" aria-label="橘色粉筆"></button>
+          <button class="swatch" data-color="#9ed8ff" style="--swatch: #9ed8ff" aria-label="藍色粉筆"></button>
+        </div>
+        <label class="range-label">筆粗 <input id="penSize" type="range" min="2" max="14" value="5" /></label>
+        <div class="tool-row">
+          <button id="togglePen" class="chalk-btn">啟用畫筆</button>
+          <button id="clearPen" class="chalk-btn">清除</button>
+        </div>
+      </section>
+    </aside>
+
+    <button id="showTools" class="show-tools hidden">課堂工具</button>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
