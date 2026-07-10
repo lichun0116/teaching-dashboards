@@ -210,9 +210,9 @@ const els = {
 
 function init() {
   renderFocusList();
-  bindEvents();
-  resizeCanvas();
   renderFocus(0);
+  bindEvents();
+  safeResizeCanvas();
   updateTimer();
 }
 
@@ -590,7 +590,7 @@ function bindDrawing() {
       penColor = btn.dataset.color;
     });
   });
-  window.addEventListener("resize", resizeCanvas);
+  window.addEventListener("resize", safeResizeCanvas);
   els.drawLayer.addEventListener("pointerdown", (event) => {
     if (!penActive) return;
     drawing = true;
@@ -623,6 +623,15 @@ function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   canvas.getContext("2d").drawImage(snapshot, 0, 0);
+}
+
+function safeResizeCanvas() {
+  try {
+    resizeCanvas();
+  } catch {
+    els.drawLayer.width = window.innerWidth;
+    els.drawLayer.height = window.innerHeight;
+  }
 }
 
 init();
