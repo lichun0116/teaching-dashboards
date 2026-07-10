@@ -117,14 +117,14 @@ h4 {
 
 .mode-switch {
   display: flex;
-  width: 222px;
+  width: 318px;
   padding: 4px;
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.06);
 }
 
 .mode-btn {
-  width: 50%;
+  flex: 1;
   min-height: 36px;
   border: 0;
   background: transparent;
@@ -273,12 +273,21 @@ h4 {
   margin-bottom: 8px;
 }
 
-.carousel-actions {
+.carousel-actions,
+.assessment-actions {
   display: flex;
   align-items: center;
   gap: 10px;
   color: var(--muted);
   font-weight: 800;
+}
+
+.assessment-actions {
+  gap: 7px;
+}
+
+.assessment-actions .chalk-btn {
+  padding: 7px 9px;
 }
 
 .icon-btn,
@@ -569,21 +578,9 @@ textarea {
 }
 
 @media (max-width: 1180px) {
-  .topbar,
-  .dashboard {
-    padding-right: 18px;
-  }
-
-  .tool-panel {
-    top: auto;
-    bottom: 18px;
-    max-height: 58vh;
-  }
-}
-
-@media (max-width: 920px) {
   .topbar {
     height: auto;
+    padding: 14px 18px;
     align-items: stretch;
     flex-direction: column;
     gap: 12px;
@@ -591,6 +588,7 @@ textarea {
 
   .dashboard {
     grid-template-columns: 1fr;
+    padding: 14px 18px 16px;
   }
 
   .lesson-nav {
@@ -606,8 +604,52 @@ textarea {
     grid-template-rows: none;
   }
 
+  .panel {
+    min-height: 300px;
+  }
+
+  .carousel-panel,
+  .infographic-panel {
+    min-height: 390px;
+  }
+
+  .assessment-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
   .tool-panel {
-    width: min(320px, calc(100vw - 32px));
+    position: static;
+    width: auto;
+    max-height: none;
+    margin: 0 18px 18px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .tool-head {
+    grid-column: 1 / -1;
+    margin-bottom: 0;
+  }
+
+  .tool-card + .tool-card {
+    margin-top: 0;
+  }
+
+  .show-tools {
+    display: none;
+  }
+}
+
+@media (max-width: 920px) {
+  .focus-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tool-panel {
+    grid-template-columns: 1fr;
+    margin: 0 18px 18px;
   }
 }
 
@@ -624,5 +666,13 @@ textarea {
   .progress-box {
     width: 100%;
     flex-basis: auto;
+  }
+
+  .mode-switch {
+    width: 100%;
+  }
+
+  .mode-btn {
+    min-height: 44px;
   }
 }

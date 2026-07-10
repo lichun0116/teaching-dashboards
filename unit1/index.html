@@ -18,6 +18,7 @@
         </div>
       </div>
       <div class="mode-switch" aria-label="模式切換">
+        <button id="backOverview" class="mode-btn" type="button">回總覽</button>
         <button class="mode-btn active" data-mode="teacher">教師模式</button>
         <button class="mode-btn" data-mode="student">學生模式</button>
       </div>
@@ -47,7 +48,7 @@
         <div class="main-grid">
           <section class="panel carousel-panel">
             <div class="panel-head">
-              <h3>簡報輪播</h3>
+              <h3>簡報手動翻頁</h3>
               <div class="carousel-actions">
                 <button id="prevSlide" class="icon-btn" aria-label="上一張">‹</button>
                 <span id="slideIndicator">1 / 1</span>
@@ -71,7 +72,13 @@
           <section class="panel assessment-panel">
             <div class="panel-head">
               <h3>形成性評量</h3>
-              <button id="showAnswer" class="chalk-btn">顯示答案</button>
+              <div class="assessment-actions">
+                <button id="prevQuestion" class="icon-btn" aria-label="上一題">‹</button>
+                <span id="questionIndicator">1 / 2</span>
+                <button id="nextQuestion" class="icon-btn" aria-label="下一題">›</button>
+                <button id="showAnswer" class="chalk-btn">顯示答案</button>
+                <button id="exportRecords" class="chalk-btn">匯出紀錄</button>
+              </div>
             </div>
             <p id="questionText" class="question"></p>
             <div id="choiceList" class="choice-list"></div>
@@ -99,13 +106,46 @@
 
       <section class="tool-card">
         <h4>抽籤</h4>
-        <textarea id="rosterInput" rows="4">Amy
-Ben
-Cody
-Ela
-Harry
-Kate
-Jim</textarea>
+        <textarea id="rosterInput" rows="4">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40</textarea>
         <div class="tool-row">
           <button id="pickName" class="chalk-btn">抽籤</button>
           <strong id="pickedName">尚未抽籤</strong>

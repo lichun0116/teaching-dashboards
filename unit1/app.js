@@ -128,10 +128,61 @@ const focusData = [
   },
 ];
 
+const extraAssessments = [
+  {
+    question: "哪一個不是健康習慣片語？",
+    choices: ["get enough sleep", "wash hands often", "has gone to"],
+    answer: 2,
+  },
+  {
+    question: "現在完成式的基本結構是：",
+    choices: ["be + Ving", "have / has + p.p.", "did + 原形動詞"],
+    answer: 1,
+  },
+  {
+    question: "ever 在 Have you ever ...? 中主要表示：",
+    choices: ["剛剛", "曾經", "還沒"],
+    answer: 1,
+  },
+  {
+    question: "I have ____ finished my homework. 表示剛剛完成，應填：",
+    choices: ["just", "yet", "many times"],
+    answer: 0,
+  },
+  {
+    question: "since last summer 中 since 後面接的是：",
+    choices: ["一段時間", "開始時間", "次數"],
+    answer: 1,
+  },
+  {
+    question: "Casey has been to the UK. 這句表示：",
+    choices: ["去過且已回來", "去了還沒回來", "正在去的路上"],
+    answer: 0,
+  },
+  {
+    question: "讀求助信時，最適合先找哪三件事？",
+    choices: ["單字、發音、拼字", "問題、原因、請求", "作者、頁碼、圖片"],
+    answer: 1,
+  },
+];
+
+focusData.forEach((item, index) => {
+  item.assessments = [
+    {
+      question: item.question,
+      choices: item.choices,
+      answer: item.answer,
+    },
+    extraAssessments[index],
+  ];
+});
+
 let currentFocus = 0;
 let currentSlide = 0;
+let currentQuestion = 0;
 let score = 0;
 let answered = new Set();
+let assessmentRecords = new Map();
 let selectedChips = [];
 let timerSeconds = 180;
 let timerInitial = 180;
@@ -156,6 +207,7 @@ const els = {
   choiceList: document.querySelector("#choiceList"),
   feedbackText: document.querySelector("#feedbackText"),
   drawLayer: document.querySelector("#drawLayer"),
+  questionIndicator: document.querySelector("#questionIndicator"),
 };
 
 function init() {
@@ -181,6 +233,7 @@ function renderFocusList() {
 function renderFocus(index) {
   currentFocus = index;
   currentSlide = 0;
+  currentQuestion = 0;
   selectedChips = [];
   const item = focusData[index];
   document.querySelectorAll(".focus-btn").forEach((btn, idx) => {
@@ -190,11 +243,10 @@ function renderFocus(index) {
   els.focusLabel.textContent = item.subtitle;
   els.focusTitle.textContent = item.title;
   els.teacherTip.textContent = item.tip;
-  els.questionText.textContent = item.question;
   els.feedbackText.textContent = "";
   renderSlide();
   renderActivity();
-  renderChoices();
+  renderAssessment();
   updateScore();
   const infoSrc = infoBase + item.infographic;
   els.infographicImage.src = infoSrc;
@@ -206,6 +258,15 @@ function renderSlide() {
   const file = item.slides[currentSlide];
   els.slideImage.src = slideBase + file;
   els.slideIndicator.textContent = `${currentSlide + 1} / ${item.slides.length}`;
+}
+
+function renderAssessment() {
+  const item = focusData[currentFocus];
+  const assessment = item.assessments[currentQuestion];
+  els.questionText.textContent = assessment.question;
+  els.questionIndicator.textContent = `${currentQuestion + 1} / ${item.assessments.length}`;
+  els.feedbackText.textContent = "";
+  renderChoices();
 }
 
 function renderActivity() {
@@ -274,8 +335,9 @@ function renderActivity() {
 
 function renderChoices() {
   const item = focusData[currentFocus];
+  const assessment = item.assessments[currentQuestion];
   els.choiceList.innerHTML = "";
-  item.choices.forEach((choice, idx) => {
+  assessment.choices.forEach((choice, idx) => {
     const btn = document.createElement("button");
     btn.className = "choice-btn";
     btn.type = "button";
@@ -286,7 +348,7 @@ function renderChoices() {
 }
 
 function updateScore() {
-  els.scoreText.textContent = `${score} / ${focusData.length}`;
+  els.scoreText.textContent = `${score} / ${focusData.length * 2}`;
 }
 
 function checkActivity() {
@@ -353,7 +415,25 @@ function bindEvents() {
   });
 
   document.querySelector("#showAnswer").addEventListener("click", () => {
-    checkChoice(focusData[currentFocus].answer, true);
+    checkChoice(focusData[currentFocus].assessments[currentQuestion].answer, true);
+  });
+
+  document.querySelector("#prevQuestion").addEventListener("click", () => {
+    const count = focusData[currentFocus].assessments.length;
+    currentQuestion = (currentQuestion - 1 + count) % count;
+    renderAssessment();
+  });
+
+  document.querySelector("#nextQuestion").addEventListener("click", () => {
+    const count = focusData[currentFocus].assessments.length;
+    currentQuestion = (currentQuestion + 1) % count;
+    renderAssessment();
+  });
+
+  document.querySelector("#exportRecords").addEventListener("click", exportAssessmentRecords);
+
+  document.querySelector("#backOverview").addEventListener("click", () => {
+    window.location.href = "../";
   });
 
   document.querySelectorAll(".mode-btn").forEach((btn) => {
@@ -385,21 +465,66 @@ function fillNextSlot() {
 
 function checkChoice(choiceIndex, revealOnly = false) {
   const item = focusData[currentFocus];
+  const assessment = item.assessments[currentQuestion];
   document.querySelectorAll(".choice-btn").forEach((btn) => {
     const idx = Number(btn.dataset.choice);
-    btn.classList.toggle("correct", idx === item.answer);
-    btn.classList.toggle("wrong", idx === choiceIndex && idx !== item.answer);
+    btn.classList.toggle("correct", idx === assessment.answer);
+    btn.classList.toggle("wrong", idx === choiceIndex && idx !== assessment.answer);
   });
-  if (choiceIndex === item.answer) {
+  const isCorrect = choiceIndex === assessment.answer;
+  if (!revealOnly) {
+    const key = `${currentFocus}-${currentQuestion}`;
+    assessmentRecords.set(key, {
+      time: new Date().toLocaleString("zh-TW"),
+      focus: item.title,
+      questionNumber: currentQuestion + 1,
+      question: assessment.question,
+      selected: assessment.choices[choiceIndex],
+      correctAnswer: assessment.choices[assessment.answer],
+      result: isCorrect ? "correct" : "wrong",
+    });
+  }
+  if (isCorrect) {
     els.feedbackText.textContent = revealOnly ? "答案已標示。" : "答對了。";
-    if (!revealOnly && !answered.has(currentFocus)) {
-      answered.add(currentFocus);
+    const answerKey = `${currentFocus}-${currentQuestion}`;
+    if (!revealOnly && !answered.has(answerKey)) {
+      answered.add(answerKey);
       score += 1;
       updateScore();
     }
   } else {
     els.feedbackText.textContent = "還不對，請回到簡報或資訊圖找線索。";
   }
+}
+
+function exportAssessmentRecords() {
+  const rows = [
+    ["時間", "教學重點", "題號", "題目", "作答", "正解", "結果"],
+    ...[...assessmentRecords.values()].map((record) => [
+      record.time,
+      record.focus,
+      record.questionNumber,
+      record.question,
+      record.selected,
+      record.correctAnswer,
+      record.result,
+    ]),
+  ];
+  const csv = rows.map((row) => row.map(csvCell).join(",")).join("\r\n");
+  const blob = new Blob(["\ufeff", csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `unit1-assessment-records-${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function csvCell(value) {
+  const text = String(value ?? "");
+  return `"${text.replaceAll('"', '""')}"`;
 }
 
 function setMode(mode) {
