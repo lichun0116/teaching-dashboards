@@ -6,7 +6,7 @@ const focusData = [
     label: "重點 1",
     title: "健康習慣六片語",
     subtitle: "用完整動詞片語回答 How do you stay healthy?",
-    slides: ["slide-01.png", "slide-02.png", "slide-03.png"],
+    slide: "slide-01.png",
     infographic: "infographic_01_healthy_habits.png",
     task: {
       type: "select",
@@ -27,7 +27,7 @@ const focusData = [
     label: "重點 2",
     title: "現在完成式公式",
     subtitle: "主詞 + have / has + 過去分詞",
-    slides: ["slide-04.png", "slide-08.png", "slide-12.png"],
+    slide: "slide-04.png",
     infographic: "infographic_02_present_perfect_formula.png",
     task: {
       type: "slots",
@@ -44,7 +44,7 @@ const focusData = [
     label: "重點 3",
     title: "Have you ever 問經驗",
     subtitle: "用 ever 問到目前為止有沒有做過",
-    slides: ["slide-05.png", "slide-12.png"],
+    slide: "slide-05.png",
     infographic: "infographic_03_ever_experience.png",
     task: {
       type: "build",
@@ -61,7 +61,7 @@ const focusData = [
     label: "重點 4",
     title: "already / yet / just",
     subtitle: "辨認已經、還沒、剛剛",
-    slides: ["slide-06.png", "slide-11.png"],
+    slide: "slide-06.png",
     infographic: "infographic_04_already_yet_just.png",
     task: {
       type: "match",
@@ -79,7 +79,7 @@ const focusData = [
     label: "重點 5",
     title: "How long、for、since",
     subtitle: "for 接一段時間，since 接開始時間",
-    slides: ["slide-07.png", "slide-12.png"],
+    slide: "slide-07.png",
     infographic: "infographic_05_for_since.png",
     task: {
       type: "sort",
@@ -96,7 +96,7 @@ const focusData = [
     label: "重點 6",
     title: "have been to / have gone to",
     subtitle: "判斷人現在是否已經回來",
-    slides: ["slide-09.png", "slide-12.png"],
+    slide: "slide-09.png",
     infographic: "infographic_06_been_to_gone_to.png",
     task: {
       type: "select",
@@ -113,7 +113,7 @@ const focusData = [
     label: "重點 7",
     title: "Reading 三步驟",
     subtitle: "先找 problem、reason、request",
-    slides: ["slide-10.png", "slide-11.png", "slide-12.png"],
+    slide: "slide-10.png",
     infographic: "infographic_07_reading_strategy.png",
     task: {
       type: "slots",
@@ -178,7 +178,6 @@ focusData.forEach((item, index) => {
 });
 
 let currentFocus = 0;
-let currentSlide = 0;
 let currentQuestion = 0;
 let score = 0;
 let answered = new Set();
@@ -198,7 +197,6 @@ const els = {
   focusTitle: document.querySelector("#focusTitle"),
   scoreText: document.querySelector("#scoreText"),
   slideImage: document.querySelector("#slideImage"),
-  slideIndicator: document.querySelector("#slideIndicator"),
   infographicImage: document.querySelector("#infographicImage"),
   openInfographic: document.querySelector("#openInfographic"),
   visualTask: document.querySelector("#visualTask"),
@@ -232,7 +230,6 @@ function renderFocusList() {
 
 function renderFocus(index) {
   currentFocus = index;
-  currentSlide = 0;
   currentQuestion = 0;
   selectedChips = [];
   const item = focusData[index];
@@ -255,9 +252,7 @@ function renderFocus(index) {
 
 function renderSlide() {
   const item = focusData[currentFocus];
-  const file = item.slides[currentSlide];
-  els.slideImage.src = slideBase + file;
-  els.slideIndicator.textContent = `${currentSlide + 1} / ${item.slides.length}`;
+  els.slideImage.src = slideBase + item.slide;
 }
 
 function renderAssessment() {
@@ -371,18 +366,6 @@ function bindEvents() {
     const btn = event.target.closest(".focus-btn");
     if (!btn) return;
     renderFocus(Number(btn.dataset.index));
-  });
-
-  document.querySelector("#prevSlide").addEventListener("click", () => {
-    const count = focusData[currentFocus].slides.length;
-    currentSlide = (currentSlide - 1 + count) % count;
-    renderSlide();
-  });
-
-  document.querySelector("#nextSlide").addEventListener("click", () => {
-    const count = focusData[currentFocus].slides.length;
-    currentSlide = (currentSlide + 1) % count;
-    renderSlide();
   });
 
   document.querySelector("#resetActivity").addEventListener("click", renderActivity);
